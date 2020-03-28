@@ -5,4 +5,4 @@ package-lock.json
 
 .env
 
-server.js
+/server.js
