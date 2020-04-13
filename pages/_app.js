@@ -1,24 +1,27 @@
-// import App from "next/app";
+import fetch from "node-fetch";
 import Head from "next/head";
 import { AppProvider } from "@shopify/polaris";
 import { Provider } from "@shopify/app-bridge-react";
 import "@shopify/polaris/styles.css";
 import translations from "@shopify/polaris/locales/en.json";
 import Cookies from "js-cookie";
-import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "react-apollo";
+import { ApolloClient } from "apollo-client";
+import { InMemoryCache } from "apollo-cache-inmemory";
+import { createHttpLink } from "apollo-link-http";
+import { ApolloProvider } from "@apollo/react-hooks";
 
+const link = createHttpLink({ uri: "/graphql", fetch: fetch });
+const cache = new InMemoryCache();
 const client = new ApolloClient({
-  fetchOptions: {
-    credentials: "include"
-  }
+  cache,
+  link,
 });
 
 const embedApp = ({ Component, pageProps }) => {
   const config = {
     apiKey: API_KEY,
     shopOrigin: Cookies.get("shopOrigin"),
-    forceRedirect: true
+    forceRedirect: true,
   };
   return (
     <>

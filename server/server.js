@@ -3,11 +3,13 @@ require("dotenv").config();
 const Koa = require("koa");
 const { default: createShopifyAuth } = require("@shopify/koa-shopify-auth");
 const session = require("koa-session");
+const response = require("koa-respond");
+const bodyParser = require("koa-bodyparser");
+const cors = require("cors");
 // Import routes
 const router = require("../routes");
 
-//Register Webhooks
-const { registration } = require("../webhooks");
+const { default: graphQLProxy } = require("@shopify/koa-shopify-graphql-proxy");
 
 const { ApiVersion } = require("@shopify/koa-shopify-graphql-proxy");
 
@@ -25,24 +27,25 @@ server.use(
       "write_products",
       "write_orders",
       "read_orders",
-      "read_customers"
+      "read_customers",
     ],
     async afterAuth(ctx) {
       const { shop, accessToken } = ctx.session;
       ctx.cookies.set("shopOrigin", shop, {
         httpOnly: false,
         secure: true,
-        sameSite: "none"
+        sameSite: "none",
       });
 
-      await registration(HOST, accessToken, shop, ApiVersion.January20);
-
-      ctx.redirect("/");
-    }
+      ctx.redirect(`/`);
+    },
   })
 );
-
+server.use(graphQLProxy({ version: ApiVersion.January20 }));
+server.use(bodyParser());
+server.use(response());
 server.use(router.allowedMethods());
 server.use(router.routes());
+server.use(cors());
 
 module.exports = server;
