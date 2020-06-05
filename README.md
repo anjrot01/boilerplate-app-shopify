@@ -43,7 +43,7 @@ De aquí en adelante Enjoy. 😎
 - [Apollo](https://www.apollographql.com/)
 - [Polaris](https://polaris.shopify.com/)
 
-Dependencias sugeriadas en el tutorial de Shopify.
+Dependencias sugeriadas en el tutorial de Shopify 📡.
 
 Saludos
 Antonio Rodríguez
